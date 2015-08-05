@@ -8,9 +8,16 @@ var fMXIPs = [ 'mxdomain.qq.com' ];
 var opendns = '208.67.222.222';
 var dns114 = '114.114.114.114';
 
+function checkIPs(addrs) {
+  addrs.length.should.above(0);
+  addrs.forEach(function (addr) {
+    validator.isIP(addr).should.ok();
+  });
+}
+
 describe('test/nslookup.test.js', function () {
   it('should ok', function () {
-    true.should.ok;
+    true.should.ok();
   });
 
   it('should work with callback', function (done) {
@@ -33,19 +40,68 @@ describe('test/nslookup.test.js', function () {
     nslookup('baidu.com').end(function (err, addrs) {
       should.not.exists(err);
       addrs.length.should.above(1);
-      addrs.forEach(function (addr) {
-        validator.isIP(addr).should.ok;
-      });
+      checkIPs(addrs);
       done();
     });
   });
 
-  it('should return mx record', function (done) {
-    nslookup(fDomain).type('mx').end(function (err, addrs) {
-      should.not.exists(err);
-      addrs.should.eql(fMXIPs);
-      done();
+  describe('test types', function () {
+    it('should return mx record', function (done) {
+      nslookup(fDomain).type('mx').end(function (err, addrs) {
+        should.not.exists(err);
+        addrs.should.eql(fMXIPs);
+        done();
+      });
     });
+
+    it('should return aaaa record', function (done) {
+      nslookup('google.com').type('aaaa').end(function (err, addrs) {
+        should.not.exists(err);
+        checkIPs(addrs);
+        done();
+      });
+    });
+
+    it('should return ns record', function (done) {
+      nslookup(fDomain).type('ns').end(function (err, addrs) {
+        should.not.exists(err);
+        addrs.length.should.above(0);
+        addrs.forEach(function (a) {
+          a.should.endWith('ispapi.net');
+        });
+        done();
+      });
+    });
+
+    it('should return txt record', function (done) {
+      nslookup('bing.com').type('txt').end(function (err, addrs) {
+        should.not.exists(err);
+        addrs.length.should.above(0);
+        addrs.forEach(function (a) {
+          a.length.should.above(0);
+        });
+        done();
+      });
+    });
+
+    it('should not return cname record', function () {
+      (function () {
+        nslookup(fDomain).type('cname');
+      }).should.throw();
+    });
+
+    it('should not return soa record', function () {
+      (function () {
+        nslookup('bing.com').type('soa');
+      }).should.throw();
+    });
+
+    it('should not return srv record', function () {
+      (function () {
+        nslookup('bing.com').type('srv');
+      }).should.throw();
+    });
+
   });
 
   it('should use other dns', function (done) {

@@ -50,9 +50,8 @@ if timeout, then the `NSLookupTimeoutError` error would be callback.
 
 `callback = function (err, addrs)`
 
-addrs is an Array
+`addrs` is an Array
 
 ### TODO
 
 1. travis-ci
-1. test more dns type
