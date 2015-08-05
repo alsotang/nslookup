@@ -56,4 +56,3 @@ if timeout, then the `NSLookupTimeoutError` error would be callback.
 
 ### TODO
 
-1. travis-ci
