@@ -18,6 +18,12 @@ nslookup('fxck.it')
 
 ## API
 
+### nslookup
+
+`nslookup(domain)` and chain with methods
+
+`nslookup(domain, function (err, addrs))`. Simply query `a` type and use `8.8.8.8`.
+
 ### .server(server)
 
 String or Object
@@ -32,7 +38,7 @@ here can be `mx` or `a` or `ns`
 
 e.g.: `.type('ns')`
 
-### timeout(timeout)
+### .timeout(timeout)
 
 default is 3 * 1000 ms.
 
@@ -40,7 +46,7 @@ if timeout, then the `NSLookupTimeoutError` error would be callback.
 
 `.timeout(3 * 1000)`
 
-### end(callback)
+### .end(callback)
 
 `callback = function (err, addrs)`
 
